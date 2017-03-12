@@ -1,0 +1,86 @@
+function echo_err () {
+  [ -z $( command -v tput ) ] && {
+    >&2 echo -e "$@"
+    } || {
+    >&2 echo -e "$( tput setaf 1)$@$( tput sgr0 )"
+  }
+}
+
+function echo_out () {
+  [ -z $( command -v tput ) ] && {
+    >&2 echo -e "-- $@"
+    } || {
+    >&2 echo -e "$( tput setaf 2)-- $@$( tput sgr0 )"
+  }
+}
+
+function init-default-settings () {
+  export workingdir=
+  export runaslocaluser=0
+  export rmcontainer=1
+  export xorg=0
+}
+
+function get-image-tag () {
+  PREFIX="basti-tee/"
+  SUFFIX=":latest"
+  dir=$( basename $( pwd ) )
+  echo_out "Image tag is $PREFIX$dir$SUFFIX"
+  echo "$PREFIX$dir$SUFFIX"
+}
+
+function validate-working-dir () {
+  [ -z "$1" ] || [ ! -d "$1" ] && {
+    echo_err "No working directory or directory does not exist."
+    exit 1
+  }
+  [ "${1:0:1}" != "/" ] && {
+    echo_err "Working directory not absolute."
+    exit 1
+  }
+  echo "$1"
+}
+
+function build-docker-image () {
+  docker build -t $imagetag - < Dockerfile
+}
+
+function re-run-docker-container () {
+  [ ! -z "$workingdir" ] && {
+    workingdir=$( echo $workingdir | sed -r -e 's/[\/]+$//g' )
+    echo_out "Working dir set to: $workingdir"
+    flag_wdir="-v ${workingdir}:/workdir"
+    } || {
+    echo_out "No working dir set"
+  }
+  [ "$runaslocaluser" == "1" ] && {
+    echo_out "Will run as user: $USER"
+    flag_user="-v /etc/group:/etc/group:ro -v /etc/passwd:/etc/passwd:ro -u $( id -u $USER ):$( id -g $USER )"
+    } || {
+    echo_out "Will run as root"
+  }
+  [ "$rmcontainer" == "1" ] && {
+    echo_out "Will remove container"
+    flag_rm="--rm"
+    } || {
+    echo_out "Will keep container"
+  }
+  [ "$xorg" == "1" ] && {
+    echo_out "Will forward Xserver"
+    flag_video="-e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix"
+    } || {
+    echo_out "Running headless"
+  }
+  cid=$( docker ps -a | grep "$imagetag" | awk '{ print $1 }' | head -n1 )
+  if [ ! -z "$cid" ] && [ "$rmcontainer" != "1" ]
+  then
+    echo_out "Restarting existing container with id: $cid"
+    docker start -i "$cid"
+    exit
+  else
+    echo_out "Running container from scratch."
+    dcom="docker run -ti $flag_rm $flag_wdir $flag_user $flag_video $imagetag bash"
+    echo_out "\n\n$dcom\n"
+    eval $dcom
+  fi
+}

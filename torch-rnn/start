@@ -5,8 +5,7 @@ source ../docker-commons
 imagetag=$( get-image-tag )
 
 init-default-settings
-workingdir=$( validate-working-dir $@ ) || exit $?
-runaslocaluser=1
+rmcontainer=0
 
 build-docker-image
 re-run-docker-container

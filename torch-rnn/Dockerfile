@@ -1,8 +1,13 @@
+############################################################################
+# Dockerfile based on
+# https://raw.githubusercontent.com/crisbal/docker-torch-rnn/\
+# master/Base/Dockerfile
+# published under MIT License
+############################################################################
 FROM ubuntu:14.04
-MAINTAINER Cristian Baldi "bld.cris.96@gmail.com"
-
-ENV DEBIAN_FRONTEND noninteractive
-ENV DEBCONF_NONINTERACTIVE_SEEN true
+LABEL version="0.1"
+LABEL description="A reusable RNN/LSTM setup for torch"
+LABEL maintainer="basti.tee@gmx.de"
 
 # Required packages
 RUN apt-get update
@@ -27,12 +32,12 @@ ENV LD_LIBRARY_PATH=/root/torch/install/lib:$LD_LIBRARY_PATH
 ENV DYLD_LIBRARY_PATH=/root/torch/install/lib:$DYLD_LIBRARY_PATH
 ENV LUA_CPATH='/root/torch/install/lib/?.so;'$LUA_CPATH
 
-#torch-rnn and python requirements
+# torch-rnn and python requirements
 WORKDIR /root
 RUN git clone https://github.com/jcjohnson/torch-rnn && \
     pip install -r torch-rnn/requirements.txt
 
-#Lua requirements
+# Lua requirements
 WORKDIR /root
 RUN luarocks install torch
 RUN luarocks install nn
@@ -43,5 +48,11 @@ RUN git clone https://github.com/deepmind/torch-hdf5 /root/torch-hdf5
 WORKDIR /root/torch-hdf5
 RUN luarocks make hdf5-0-0.rockspec
 
-#Done!
+# Update torch to use four cpus
+ENV OMP_NUM_THREADS=4
+ENV USE_OPENMP=1
+WORKDIR /root/torch
+RUN ./install.sh -b
+
+# Done
 WORKDIR /root/torch-rnn

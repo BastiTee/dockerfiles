@@ -6,7 +6,7 @@ imagetag=$( get-image-tag )
 
 init-default-settings
 workingdir=$( validate-working-dir $@ ) || exit $?
-runaslocaluser=1
+xorg=1
 
 build-docker-image
 re-run-docker-container
