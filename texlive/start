@@ -1,0 +1,32 @@
+#!/bin/bash
+
+imagetag="basti-tee/texlive:latest"
+
+# setup working directory
+[ -z "$1" ] || [ ! -d "$1" ] && {
+    echo "No working directory or directory does not exist."
+    exit 1
+}
+workdir="$( readlink -f "$1" )"
+
+# setup docker hub
+cd "$( dirname "$( readlink -f "$0" )" )"
+docker build -t $imagetag - < Dockerfile
+
+# check if image was previously started
+cid=$( docker ps -a | grep "$imagetag" | awk '{ print $1 }' | head -n1 )
+echo "-- found existing container $cid"
+if [ ! -z "$cid" ]
+then
+    echo "-- restarting existing container."
+    docker start -i "$cid"
+    exit
+else
+    echo "-- running container from scratch."
+    docker run -ti \
+    -v ${workdir}:/workdir \
+    -v /etc/group:/etc/group:ro \
+    -v /etc/passwd:/etc/passwd:ro \
+    -u $( id -u $USER ):$( id -g $USER ) \
+    $imagetag bash
+fi
