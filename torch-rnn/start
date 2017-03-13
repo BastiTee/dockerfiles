@@ -5,6 +5,7 @@ source ../docker-commons
 imagetag=$( get-image-tag )
 
 init-default-settings
+workingdir=$( validate-working-dir $@ ) || exit $?
 rmcontainer=0
 
 build-docker-image

@@ -54,5 +54,5 @@ ENV USE_OPENMP=1
 WORKDIR /root/torch
 RUN ./install.sh -b
 
-# Done
+RUN mkdir /workdir
 WORKDIR /root/torch-rnn
