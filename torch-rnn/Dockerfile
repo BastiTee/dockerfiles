@@ -18,7 +18,8 @@ RUN apt-get -y install \
     python-pip \
     git \
     libhdf5-dev \
-    software-properties-common
+    software-properties-common \
+    vim
 
 # Torch and luarocks
 RUN git clone https://github.com/torch/distro.git /root/torch --recursive && cd /root/torch && \
