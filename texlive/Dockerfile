@@ -4,8 +4,8 @@ LABEL description="German texlive environment."
 LABEL maintainer="basti.tee@gmx.de"
 
 # Required packages
-RUN apt-get update
-RUN apt-get upgrade
+RUN apt-get update -y
+RUN apt-get upgrade -y
 RUN apt-get -y install \
     texlive texlive-lang-german
 
