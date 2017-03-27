@@ -6,8 +6,8 @@ imagetag=$( get-image-tag )
 
 init-default-settings
 workingdir=$( validate-working-dir $@ ) || exit $?
-xorg=1
+ports=8000
 
 build-docker-image
 re-run-docker-container \
-bash
+server -s /workdir -d /workdir/_site --port 8000 --host 0.0.0.0

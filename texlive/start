@@ -1,7 +1,7 @@
 #!/bin/bash
 
 cd "$( dirname "$( readlink -f "$0" )" )"
-source ../docker-commons
+source ../commons
 imagetag=$( get-image-tag )
 
 init-default-settings
@@ -9,4 +9,5 @@ workingdir=$( validate-working-dir $@ ) || exit $?
 runaslocaluser=1
 
 build-docker-image
-re-run-docker-container
+re-run-docker-container \
+bash

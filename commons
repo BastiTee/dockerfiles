@@ -19,6 +19,7 @@ function init-default-settings () {
   export runaslocaluser=0
   export rmcontainer=1
   export xorg=0
+  export ports=
 }
 
 function get-image-tag () {
@@ -46,31 +47,45 @@ function build-docker-image () {
 }
 
 function re-run-docker-container () {
+
+  # print command line
+  echo_out "[com] $@"
+
+  # resolve environment variables
   [ ! -z "$workingdir" ] && {
     workingdir=$( echo $workingdir | sed -r -e 's/[\/]+$//g' )
     echo_out "Working dir set to: $workingdir"
     flag_wdir="-v ${workingdir}:/workdir"
-    } || {
+  } || {
     echo_out "No working dir set"
   }
   [ "$runaslocaluser" == "1" ] && {
     echo_out "Will run as user: $USER"
     flag_user="-v /etc/group:/etc/group:ro -v /etc/passwd:/etc/passwd:ro -u $( id -u $USER ):$( id -g $USER )"
-    } || {
+  } || {
     echo_out "Will run as root"
   }
   [ "$rmcontainer" == "1" ] && {
     echo_out "Will remove container"
     flag_rm="--rm"
-    } || {
+  } || {
     echo_out "Will keep container"
   }
   [ "$xorg" == "1" ] && {
     echo_out "Will forward Xserver"
     flag_video="-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --device /dev/snd"
-    } || {
+  } || {
     echo_out "Running headless"
   }
+  [ ! -z "$ports" ] && {
+    echo_out "Exposing ports $ports"
+    for port in $( echo $ports | tr "," " " ); do
+        flag_ports="$flag_ports -p ${port}:${port}"
+    done
+  } || {
+    echo_out "Not exposing any ports"
+  }
+
   cid=$( docker ps -a | grep "$imagetag" | awk '{ print $1 }' | head -n1 )
   if [ ! -z "$cid" ] && [ "$rmcontainer" != "1" ]
   then
@@ -79,7 +94,7 @@ function re-run-docker-container () {
     exit
   else
     echo_out "Running container from scratch."
-    dcom="docker run -ti $flag_rm $flag_wdir $flag_user $flag_video $imagetag bash"
+    dcom="docker run -ti $flag_rm $flag_wdir $flag_user $flag_video $flag_ports $imagetag $@"
     echo_out "\n\n$dcom\n"
     eval $dcom
   fi
