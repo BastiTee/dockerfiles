@@ -7,6 +7,8 @@ imagetag=$( get-image-tag )
 init-default-settings
 workingdir=$( validate-working-dir $1 ) || exit $?
 xorg=1
+rmcontainer=0
+runasuser=1
 shift
 
 build-docker-image

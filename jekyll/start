@@ -5,7 +5,7 @@ source ../commons
 imagetag=$( get-image-tag )
 
 init-default-settings
-workingdir=$( validate-working-dir $@ ) || exit $?
+workingdir=$( validate-working-dir $1 ) || exit $?
 ports=8000
 
 build-docker-image

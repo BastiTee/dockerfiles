@@ -5,9 +5,9 @@ source ../commons
 imagetag=$( get-image-tag )
 
 init-default-settings
-workingdir=$( validate-working-dir $@ ) || exit $?
+workingdir=$( validate-working-dir $1 ) || exit $?
 rmcontainer=0
 
 build-docker-image
-re-run-docker-container \
-bash
+[ $? != 0 ] && exit 1
+re-run-docker-container bash

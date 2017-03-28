@@ -5,10 +5,8 @@ source ../commons
 imagetag=$( get-image-tag )
 
 init-default-settings
-workingdir=$( validate-working-dir $1 ) || exit $?
 xorg=1
-shift
 
 build-docker-image
 [ $? != 0 ] && exit 1
-re-run-docker-container $@
+re-run-docker-container

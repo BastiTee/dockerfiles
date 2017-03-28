@@ -73,7 +73,8 @@ function re-run-docker-container () {
   }
   [ "$xorg" == "1" ] && {
     echo_out "Will forward Xserver"
-    flag_video="-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix$DISPLAY --device /dev/snd"
+    xhost +local:docker
+    flag_video="-v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=$DISPLAY --device /dev/snd"
   } || {
     echo_out "Running headless"
   }
