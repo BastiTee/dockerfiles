@@ -26,25 +26,24 @@ function init-default-settings () {
 function get-image-tag () {
   PREFIX="basti-tee/"
   SUFFIX=":latest"
-  dir=$( basename $( pwd ) )
+  dir=$( basename $( dirname $1 ))
   echo_out "Image tag is $PREFIX$dir$SUFFIX"
   echo "$PREFIX$dir$SUFFIX"
 }
 
-function validate-working-dir () {
+function validate-dir () {
+  [ -z $2 ] && label="working" || label="$2"
   [ -z "$1" ] || [ ! -d "$1" ] && {
-    echo_err "No working directory or directory does not exist."
+    echo_err "No $label directory or directory does not exist."
     exit 1
   }
-  [ "${1:0:1}" != "/" ] && {
-    echo_err "Working directory not absolute."
-    exit 1
-  }
-  echo "$1"
+  echo "$( readlink -f "$1" )"
 }
 
 function build-docker-image () {
-  docker build -t $imagetag - < Dockerfile
+  dfile="$( dirname $1 )/Dockerfile"
+  # echo_err $dfile
+  docker build -t $imagetag - < $dfile
 }
 
 function re-run-docker-container () {

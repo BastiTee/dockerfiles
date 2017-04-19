@@ -1,24 +1,15 @@
 #!/bin/bash
 
-cd "$( dirname "$( readlink -f "$0" )" )"
-source ../commons
-imagetag=$( get-image-tag )
+source $( dirname $( readlink -f $0 ))/../commons
+imagetag=$( get-image-tag $0 )
 
 init-default-settings
-workingdir=$( validate-working-dir $1 ) || exit $?
+workingdir=$( validate-dir $1 ) || exit $?
 ports=8000
 
-# _posts dir
-[ -z "$2" ] || [ ! -d "$2" ] && {
-echo_err "No _posts directory or directory does not exist."
-exit 1
-}
-[ "${2:0:1}" != "/" ] && {
-echo_err "_posts directory not absolute."
-exit 1
-}
+posts_dir=$( validate-dir "$2" "_posts" ) || exit $?
 add_args="-v $2:/workdir/_posts"
 
-build-docker-image
+build-docker-image $0
 re-run-docker-container \
 server -s /workdir -d /workdir/_site --port 8000 --host 0.0.0.0

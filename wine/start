@@ -1,14 +1,13 @@
 #!/bin/bash
 
-cd "$( dirname "$( readlink -f "$0" )" )"
-source ../commons
-imagetag=$( get-image-tag )
+source $( dirname $( readlink -f $0 ))/../commons
+imagetag=$( get-image-tag $0 )
 
 init-default-settings
-workingdir=$( validate-working-dir $1 ) || exit $?
+workingdir=$( validate-dir $1 ) || exit $?
 xorg=1
 shift
 
-build-docker-image
+build-docker-image $0
 [ $? != 0 ] && exit 1
 re-run-docker-container $@

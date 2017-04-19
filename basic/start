@@ -1,12 +1,11 @@
 #!/bin/bash
 
-cd "$( dirname "$( readlink -f "$0" )" )"
-source ../commons
-imagetag=$( get-image-tag )
+source $( dirname $( readlink -f $0 ))/../commons
+imagetag=$( get-image-tag $0 )
 
 init-default-settings
 rmcontainer=1
 
-build-docker-image
+build-docker-image $0
 [ $? != 0 ] && exit 1
 re-run-docker-container $@

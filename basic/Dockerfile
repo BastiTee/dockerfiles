@@ -18,13 +18,13 @@ RUN apt-get install -y vim git
 RUN mkdir /root/git
 WORKDIR /root/git
 RUN git clone https://github.com/BastiTee/bastis-bash-commons.git
-RUN git clone https://github.com/BastiTee/bastis-ubersettings.git
+RUN git clone https://github.com/BastiTee/ubersettings.git
 RUN git clone https://github.com/BastiTee/dockerfiles.git
 
 # Install working environment
 RUN echo "source /root/git/bastis-bash-commons/bbc-bash-defaults" > /root/.bashrc
 RUN echo "export PATH=${PATH}:/root/git/bastis-bash-commons:/root/git/dockerfiles" >> /root/.bashrc
-WORKDIR /root/git/bastis-ubersettings/shell-rcs
+WORKDIR /root/git/ubersettings/shell-rcs
 RUN ./link.sh
 
 # Done

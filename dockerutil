@@ -44,15 +44,15 @@ function rm-untagged () {
 function init () {
   echo "-- Initializing docker setup."
   shift
-  cd "$( dirname "$( readlink -f "$0" )" )"
-  setups=$( find -type f -iname "Dockerfile" | xargs dirname |\
+  setups=$( find "$( dirname "$( readlink -f "$0" )" )" \
+  -type f -iname "Dockerfile" | xargs dirname |\
   sed -e "s/^\.\///" | tr "\n" " " )
   for setup in $setups; do
-    echo "   + '$setup'"
-    if [ "$setup" == "$1" ]; then
+    bn=$( basename $setup )
+    echo "   + '$bn'"
+    if [ "$bn" == "$1" ]; then
       shift
-      cd $setup
-      ./start $@
+      ${setup}/start $@
       exit 0
     fi
   done
