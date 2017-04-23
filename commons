@@ -91,7 +91,9 @@ function re-run-docker-container () {
   if [ ! -z "$cid" ] && [ "$rmcontainer" != "1" ]
   then
     echo_out "Restarting existing container with id: $cid"
-    docker start -i "$cid"
+    start_com="docker start -i $cid"
+    echo_out "-- $start_com"
+    eval $start_com
     exit
   else
     echo_out "Running container from scratch."
