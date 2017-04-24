@@ -8,7 +8,8 @@ workingdir=$( validate-dir $1 ) || exit $?
 ports=8000
 
 posts_dir=$( validate-dir "$2" "_posts" ) || exit $?
-add_args="-v $2:/workdir/_posts"
+posts_dir=$( validate-dir "$3" "blogres" ) || exit $?
+add_args="-v $2:/workdir/_posts -v $3:/workdir/res/blogres"
 
 build-docker-image $0
 re-run-docker-container \

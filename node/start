@@ -8,7 +8,7 @@ workingdir=$( validate-dir $1 ) || exit $?
 xorg=1
 rmcontainer=0
 runaslocaluser=1
-ports=8000,50199
+ports=50199
 shift
 
 build-docker-image $0

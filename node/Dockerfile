@@ -9,6 +9,5 @@ RUN apt-get install -y apt-utils
 RUN apt-get upgrade -y
 RUN apt-get install -y nodejs nodejs-legacy npm x11-apps gtk3.0 libxss1 gconf2 libnss3 libcanberra-gtk-module
 RUN mkdir /workdir
-EXPOSE 8000
 EXPOSE 50199
 WORKDIR /workdir
