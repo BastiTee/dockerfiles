@@ -11,15 +11,15 @@ rme - Remove exited containers from history.
 rmu - Remove untagged images from database.
 up  - Initialize an existing docker setup
 EOF
-  exit 1
+    exit 1
 }
 
 # parse cmd line
 while getopts "h" opt; do
-  case "$opt" in
-    h) show_help ;;
-    *) echo "Illegal argument."; exit 1;;
-  esac
+    case "$opt" in
+        h) show_help ;;
+        *) echo "Illegal argument."; exit 1;;
+    esac
 done
 
 # check if there is an remaining argument and set it as job type
@@ -27,45 +27,45 @@ shift $(expr $OPTIND - 1 )
 [ $# -gt 0 ] && JOB="$1"
 
 function rm-exited () {
-  echo "-- Removing exited containers from history."
-  docker ps -a | grep "Exited (" | awk '{ print $1 }' | xargs -r docker rm
-  echo "-- Done."
-  docker ps -a
+    echo "-- Removing exited containers from history."
+    docker ps -a | grep "Exited (" | awk '{ print $1 }' | xargs -r docker rm
+    echo "-- Done."
+    docker ps -a
 }
 
 function rm-untagged () {
-  echo "-- Removing untagged images from image database."
-  docker images | grep -e "^<none>[ ]\{1,\}<none>" | awk '{print $3}' |\
-  xargs -r docker rmi -f
-  echo "-- Done."
-  docker images
+    echo "-- Removing untagged images from image database."
+    docker images | grep -e "^<none>[ ]\{1,\}<none>" | awk '{print $3}' |\
+    xargs -r docker rmi -f
+    echo "-- Done."
+    docker images
 }
 
 function init () {
-  echo "-- Initializing docker setup."
-  shift
-  setups=$( find "$( dirname "$( readlink -f "$0" )" )" \
-  -type f -iname "Dockerfile" | xargs dirname |\
-  sed -e "s/^\.\///" | tr "\n" " " )
-  for setup in $setups; do
-    bn=$( basename $setup )
-    echo "   + '$bn'"
-    if [ "$bn" == "$1" ]; then
-      shift
-      ${setup}/start $@
-      exit 0
-    fi
-  done
-  echo "Please select an existing setup."
-  exit 1
+    echo "-- Initializing docker setup."
+    shift
+    setups=$( find "$( dirname "$( readlink -f "$0" )" )" \
+        -type f -iname "Dockerfile" | xargs dirname |\
+    sed -e "s/^\.\///" | tr "\n" " " )
+    for setup in $setups; do
+        bn=$( basename $setup )
+        echo "   + '$bn'"
+        if [ "$bn" == "$1" ]; then
+            shift
+            ${setup}/start $@
+            exit 0
+        fi
+    done
+    echo "Please select an existing setup."
+    exit 1
 }
 
 if [ "$JOB" == "rme" ]; then
-  rm-exited
-elif [ "$JOB" == "rmu" ]; then
-  rm-untagged
-elif [ "$JOB" == "up" ]; then
-  init $@
+    rm-exited
+    elif [ "$JOB" == "rmu" ]; then
+    rm-untagged
+    elif [ "$JOB" == "up" ]; then
+    init $@
 else
-  show_help
+    show_help
 fi
