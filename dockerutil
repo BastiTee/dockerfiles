@@ -60,6 +60,20 @@ function init () {
     exit 1
 }
 
+# test if docker is available
+docker ps
+[ $? != 0 ] && {
+    cat << EOF
+
+---- Docker invocation failed!
+On 'Cannot connect to daemon' errors, consider adding the
+current user to the 'docker' group, esp. if docker is installed.
+sudo usermod -aG docker $USER
+
+EOF
+    exit 1
+}
+
 if [ "$JOB" == "rme" ]; then
     rm-exited
     elif [ "$JOB" == "rmu" ]; then
