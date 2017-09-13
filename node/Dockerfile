@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 LABEL version="1.0"
 LABEL description="Docker image containing a basic nodejs environment."
-LABEL maintainer="basti.tee@gmx.de"
+LABEL maintainer="basti.tee@posteo.de"
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update

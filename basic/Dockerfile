@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 LABEL version="1.0"
 LABEL description="A basic development environment."
-LABEL maintainer="basti.tee@gmx.de"
+LABEL maintainer="basti.tee@posteo.de"
 
 ENV DEBIAN_FRONTEND noninteractive
 

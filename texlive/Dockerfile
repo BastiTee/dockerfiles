@@ -1,7 +1,7 @@
 FROM ubuntu:16.04
 LABEL version="1.0"
 LABEL description="German texlive environment."
-LABEL maintainer="basti.tee@gmx.de"
+LABEL maintainer="basti.tee@posteo.de"
 
 # Required packages
 RUN apt-get update -y

@@ -1,7 +1,7 @@
 FROM alpine
 LABEL version="1.0"
 LABEL description="Docker image containing a minimal jekyll/ruby setup."
-LABEL maintainer="basti.tee@gmx.de"
+LABEL maintainer="basti.tee@posteo.de"
 
 RUN apk upgrade --update \
  && apk add libatomic readline readline-dev libxml2 libxml2-dev \

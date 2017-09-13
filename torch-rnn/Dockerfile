@@ -7,7 +7,7 @@
 FROM ubuntu:14.04
 LABEL version="0.1"
 LABEL description="A reusable RNN/LSTM setup for torch"
-LABEL maintainer="basti.tee@gmx.de"
+LABEL maintainer="basti.tee@posteo.de"
 
 # Required packages
 RUN apt-get update
