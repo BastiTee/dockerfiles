@@ -11,11 +11,10 @@ RUN apt-get install -y wget gcc automake autoconf autoconf-archive libtool pkg-c
 
 # Download source code 
 RUN wget https://github.com/boothj5/libmesode/archive/0.9.1.tar.gz
-RUN wget http://www.profanity.im/profanity-0.5.1.tar.gz
-RUN wget https://github.com/ReneVolution/profanity-omemo-plugin/archive/master.zip
 RUN tar -zxvf 0.9.1.tar.gz
-RUN tar -zxvf profanity-0.5.1.tar.gz
-RUN unzip master.zip
+RUN wget https://github.com/ReneVolution/profanity-omemo-plugin/archive/master.zip 
+RUN unzip master.zip -d profanity-omemo-src
+RUN git clone https://github.com/boothj5/profanity.git
 
 # Compile and install libmesode 
 WORKDIR /libmesode-0.9.1
@@ -24,12 +23,13 @@ RUN apt-get install -y
 RUN ./configure && make && make install && ldconfig
 
 # Compile and install profanity
-WORKDIR /profanity-0.5.1
+WORKDIR /profanity
+RUN ./bootstrap.sh
 RUN ./configure --prefix=/usr --enable-notifications --enable-python-plugins --enable-c-plugins --enable-plugins --enable-otr --enable-pgp
 RUN make && make install
 
-# Compile and install omemo plugin
-WORKDIR /profanity-omemo-plugin-master
+# Compile and install profanity-omemo
+WORKDIR /profanity-omemo-src/profanity-omemo-plugin-master/
 RUN python setup.py install --force --user --prefix=
 RUN mkdir -p ~/.local/share/profanity/plugins
 RUN cp deploy/prof_omemo_plugin.py ~/.local/share/profanity/plugins/
