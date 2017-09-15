@@ -1,6 +1,6 @@
 FROM ubuntu:16.04
 LABEL version="1.0"
-LABEL description="Docker image running profanity 0.5.1 with libmesode 0.9.1 and omemo plugin 0.1.1"
+LABEL description="Profanity XMPP-client compiled from HEAD against libmesode 0.9.1 and including profanity-omemo-plugin compile from HEAD."
 LABEL maintainer="basti.tee@posteo.de"
 
 # Setup basic environment
@@ -18,9 +18,7 @@ RUN git clone https://github.com/boothj5/profanity.git
 
 # Compile and install libmesode 
 WORKDIR /libmesode-0.9.1
-RUN ./bootstrap.sh
-RUN apt-get install -y 
-RUN ./configure && make && make install && ldconfig
+RUN ./bootstrap.sh && ./configure && make && make install && ldconfig
 
 # Compile and install profanity
 WORKDIR /profanity
