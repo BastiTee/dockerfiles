@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function echo_err () {
     [ -z $( command -v tput ) ] && {
         >&2 echo -e "$@"
