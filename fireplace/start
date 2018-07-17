@@ -4,13 +4,7 @@ source $( cd "$( dirname "$0" )"; pwd )/../commons
 imagetag=$( get-image-tag $0 )
 
 init-default-settings
-workingdir=$( validate-dir $1 ) || exit $?
-xorg=1
-rmcontainer=1
-runaslocaluser=1
-ports=50199
-shift
 
 build-docker-image $0
 [ $? != 0 ] && exit 1
-re-run-docker-container $@
+re-run-docker-container
