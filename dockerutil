@@ -1,3 +1,4 @@
+#!/bin/bash
 # ==============================================================================
 # DOCKER TOOLS
 # Assembly of recurring docker cmd-line tasks.
